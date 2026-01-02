@@ -175,7 +175,6 @@ bool atLeastThreeInAColumn (const mat & grid, maPosition & posi, unsigned & howM
 }
 
 bool atLeastThreeInARow (const mat & grid, maPosition & posi, unsigned & howMany){
-    return(1);
     howMany=0;
     while (grid[posi.ord+1][posi.abs]==grid[posi.ord][posi.abs]){
         posi.ord+=1;
