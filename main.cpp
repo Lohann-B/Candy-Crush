@@ -161,9 +161,32 @@ void move(mat & grid, maPosition & pos, char direction){
     }
 }
 
-bool atLeastThreeInAColumn (const mat & grid, maPosition & pos, unsigned & howMany){return(1);}
+bool atLeastThreeInAColumn (const mat & grid, maPosition & posi, unsigned & howMany){
+    howMany=0;
+    while (mat[posi.ord][posi.abs+1]==mat[posi.ord][posi.abs]){
+        posi.abs+=1;
+        howMany+=1;
+    }
+    if (howMany>2){
+        return(true);
+    } else {
+        return(false);
+    }
+}
 
-bool atLeastThreeInARow (const mat & grid, maPosition & pos, unsigned & howMany){return(1);}
+bool atLeastThreeInARow (const mat & grid, maPosition & posi, unsigned & howMany){
+    return(1);
+    howMany=0;
+    while (mat[posi.ord+1][posi.abs]==mat[posi.ord][posi.abs]){
+        posi.ord+=1;
+        howMany+=1;
+    }
+    if (howMany>2){
+        return(true);
+    } else {
+        return(false);
+    }
+}
 
 void removalInColumn (mat & grid, const maPosition & pos, unsigned  howMany){}
 
