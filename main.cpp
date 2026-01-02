@@ -80,8 +80,6 @@ void displayGrid(const mat &grid) {
                 couleur(5);
             }
             cout << grid[i][j];
-            //cout << '☭';
-            //cout << '卐';
             couleur(KReset);
             couleur(37);
             couleur(40);
