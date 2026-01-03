@@ -85,3 +85,23 @@ void ajouter_score(string mode, string nom, size_t score) {
     }
     cout << "Score enregistré !" << endl;
 }
+
+void tri_score(vector<Joueur>& s) {
+    size_t n = s.size();
+
+    for (size_t i = 0; i < n - 1; i++) {
+        size_t max_ind = i;
+
+        for (size_t j = i + 1; j < n; j++) {
+            if (s[j].score > s[max_ind].score) {
+                max_ind = j;
+            }
+        }
+
+        if (max_ind != i) {
+            Joueur tmp = s[i];
+            s[i] = s[max_ind];
+            s[max_ind] = tmp;
+        }
+    }
+}
