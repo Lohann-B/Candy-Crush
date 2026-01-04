@@ -923,13 +923,15 @@ int main(){
     Joueur j;
     if (select == 0) {
         j =classicMode(grid, KMatSize, KNbCandies, pos);
+        ajouter_score("classic" , j.nom, j.score);
     }
-    //else if (select == 1) duelMode(grid, KMatSize, KNbCandies, pos);
-    //else if (select == 2) leaderboard();
+    //else if (select == 1) {duelMode(grid, KMatSize, KNbCandies, pos);}
+    //else if (select == 2) {leaderboard();}
     else if (select == 3){
         j=endlessMode(grid, KMatSize, KNbCandies, pos);
+        ajouter_score("endless", j.nom, j.score);
     }
-
+    
     
 
     input.disableRawMode();
