@@ -28,4 +28,8 @@ bool atLeastThreeInARow(const mat &grid, maPosition &pos, unsigned &howMany);
 void removalInColumn (mat &grid, maPosition &pos, const unsigned  &howMany);
 void removalInRow (mat &grid, maPosition &pos, const unsigned  &howMany);
 
+vector<Joueur> lire_score(string mode);
+void ajouter_score(string mode, string nom, size_t score);
+void tri_score(vector<Joueur>& s);
+
 #endif
