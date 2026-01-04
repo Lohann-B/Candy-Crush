@@ -229,3 +229,111 @@ void removalInRow (mat &grid, maPosition &pos, const unsigned  &howMany){
         removalInColumn(grid, courant, 1);
     }
 }
+
+struct Joueur {
+    string nom;
+    size_t score;
+};
+
+vector<Joueur> lire_score(string mode) {
+    string fname = mode + ".txt";
+    ifstream file(fname);
+    vector<Joueur> s;
+    string line;
+
+    while (getline(file, line)) {
+        string nom;
+        string score;
+        bool flag = true;
+
+        for (char c : line) {
+            if (flag) {
+                if (c == ':') {
+                    flag = false;
+                } else if (c != ' ') {
+                    nom += c;
+                }
+            } else {
+                if (isdigit(c)) {
+                    score += c;
+                }
+            }
+        }
+
+        Joueur j;
+        j.nom = nom;
+        j.score = stoi(score);
+        s.push_back(j);
+    }
+
+    return s;
+}
+
+void ajouter_score(string mode, string nom, size_t score) {
+    if (nom.empty()) {
+        cout << "Pas d'enregistrement effectué, bonne journée à vous" << endl;
+        return;
+    }
+
+    vector<Joueur> s = lire_score(mode);
+    bool flag = false;
+    int i = 0;
+
+    while (i < s.size()) {
+        if (s[i].nom == nom) {
+            char a;
+            cout << "Un score est deja associé à ce nom, est-ce bien vous ? (y/n) : ";
+            cin >> a;
+            a = tolower(a);
+
+            if (a == 'y') {
+                if (score > s[i].score) {
+                    cout << "Bien joué, nouveau record !" << endl;
+                    s[i].score = score;
+                } else {
+                    cout << "Vous n'avez pas battu votre record" << endl;
+                }
+                flag = true;
+                break;
+            } else {
+                cout << "Entrez un autre nom : ";
+                cin >> nom;
+                i = -1;
+            }
+        }
+        i++;
+    }
+
+    if (!flag) {
+        Joueur j;
+        j.nom = nom;
+        j.score = score;
+        s.push_back(j);
+    }
+
+    ofstream file(mode + ".txt");
+    for (Joueur& j : s) {
+        file << j.nom << " : " << j.score << endl;
+    }
+    cout << "Score enregistré !" << endl;
+}
+
+void tri_score(vector<Joueur>& s) {
+    size_t n = s.size();
+
+    for (size_t i = 0; i < n - 1; i++) {
+        size_t max_ind = i;
+
+        for (size_t j = i + 1; j < n; j++) {
+            if (s[j].score > s[max_ind].score) {
+                max_ind = j;
+            }
+        }
+
+        if (max_ind != i) {
+            Joueur tmp = s[i];
+            s[i] = s[max_ind];
+            s[max_ind] = tmp;
+        }
+    }
+}
