@@ -144,13 +144,6 @@ private:
     termios _oldTerm;
 };
 
-
-class player {
-public:
-    string name;
-    unsigned score = 0;
-};
-
 // --- AFFICHAGE ---
 
 void clearScreen () {
@@ -421,7 +414,7 @@ unsigned initNbCandies(){
     return nb;
 }
 
-void initPName(player &p1){
+void initPName(Joueur &p){
     string input;
 
     clearScreen();
@@ -447,7 +440,7 @@ void initPName(player &p1){
         }
         else break;
     }
-    p1.name = input;
+    p.nom = input;
 }
 
 // --- MATRICE ---
@@ -518,7 +511,7 @@ void affichAbs(mat & grid){
     cout << endl;
 }
 
-void displayGrid(mat & grid, maPosition &pos, player p, unsigned coup, size_t KMatSize){
+void displayGrid(mat & grid, maPosition &pos, Joueur p, unsigned coup, size_t KMatSize){
     clearScreen();
     couleur(KReset);
 
@@ -531,7 +524,7 @@ void displayGrid(mat & grid, maPosition &pos, player p, unsigned coup, size_t KM
 
     affichBarre(grid);
 
-    cout << "\r\n|| " << p.name <<"'s score : " << p.score << endl;
+    cout << "\r\n|| " << p.nom <<"'s score : " << p.score << endl;
     cout << "|| " << "Nombre de coups restants : " << KMatSize - coup <<endl;
 }
 
@@ -581,12 +574,12 @@ void moveMenu (const char &c, unsigned &select){
     }
 }
 
-player classicMode(mat &grid, size_t &KMatSize, unsigned &KNbCandies, maPosition &pos){
+Joueur classicMode(mat &grid, size_t &KMatSize, unsigned &KNbCandies, maPosition &pos){
     char c;
     bool gameStarted = false;
     bool caseSelect = false;
 
-    player p;
+    Joueur p;
     unsigned coup = 0;
 
     while (coup != KMatSize && cin.get(c) && c!=27){
@@ -652,7 +645,7 @@ player classicMode(mat &grid, size_t &KMatSize, unsigned &KNbCandies, maPosition
             }
         }
     }
-    
+
     clearScreen();
     affichElemDecor(KGrandeCase, 35,1);
     goTo(70,3);
