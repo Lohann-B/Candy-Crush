@@ -28,7 +28,7 @@ string inputUser(unsigned sizeMax){
     char c;
 
     while (cin.get(c) && c!=10) {
-        if (input.size()<sizeMax){
+        if (c!= 127 && input.size()<sizeMax){
             input += c;
             cout << c << flush;
         }
@@ -435,6 +435,9 @@ void initPName(player &p1){
 
         if (input.empty()) {
             clearScreen();
+            affichElemDecor(KGrandeCase, 24,3,30000);
+            goTo(57, 6);
+            cout << " Entrez votre nom : " << flush;
 
             goTo(60,8);
             couleur(KRouge);
@@ -529,7 +532,7 @@ void displayGrid(mat & grid, maPosition &pos, player p, unsigned coup, size_t KM
     affichBarre(grid);
 
     cout << "\r\n|| " << p.name <<"'s score : " << p.score << endl;
-    cout << "|| " << "Nombre de coups restants : " << coup - KMatSize <<endl;
+    cout << "|| " << "Nombre de coups restants : " << KMatSize - coup <<endl;
 }
 
 void displayMenu(const unsigned &select){
@@ -583,10 +586,10 @@ player classicMode(mat &grid, size_t &KMatSize, unsigned &KNbCandies, maPosition
     bool gameStarted = false;
     bool caseSelect = false;
 
-    player p1;
+    player p;
     unsigned coup = 0;
 
-    while (cin.get(c) && c!=27 && coup != KMatSize){
+    while (coup != KMatSize && cin.get(c) && c!=27){
         if (!gameStarted){
 
             KMatSize = initMatSize();
@@ -595,13 +598,13 @@ player classicMode(mat &grid, size_t &KMatSize, unsigned &KNbCandies, maPosition
             KNbCandies = initNbCandies();
             usleep(1000000);
 
-            initPName(p1);
+            initPName(p);
             usleep(1000000);
 
             grid.resize(KMatSize);
             initGrid(grid, KMatSize, KNbCandies);
 
-            displayGrid(grid, pos, p1, coup, KMatSize); // affichage 1
+            displayGrid(grid, pos, p, coup, KMatSize); // affichage 1
 
             usleep(1000000);
 
@@ -613,7 +616,7 @@ player classicMode(mat &grid, size_t &KMatSize, unsigned &KNbCandies, maPosition
                 if (c==10) caseSelect = true;
                 else{
                     inPosMakeAMove(grid, pos, c);
-                    displayGrid(grid,pos,p1, coup, KMatSize);
+                    displayGrid(grid,pos,p, coup, KMatSize);
                 }
             } else {
                 if ((c=='z' && pos.ord!=0) || (c=='s' && pos.ord!=KMatSize-1) || (c=='q' && pos.abs!=0) || (c=='d' && pos.abs!=KMatSize-1)){
@@ -622,7 +625,7 @@ player classicMode(mat &grid, size_t &KMatSize, unsigned &KNbCandies, maPosition
                     ++ coup;
 
                     caseSelect = false;
-                    displayGrid(grid,pos,p1, coup, KMatSize);
+                    displayGrid(grid,pos,p, coup, KMatSize);
 
                     bool Streak = true;
                     maPosition streakPos;
@@ -632,15 +635,15 @@ player classicMode(mat &grid, size_t &KMatSize, unsigned &KNbCandies, maPosition
 
                         if (atLeastThreeInARow(grid, streakPos, howMany)) {
                             removalInRow(grid, streakPos, howMany);
-                            displayGrid(grid, pos,p1, coup, KMatSize);
+                            displayGrid(grid, pos,p, coup, KMatSize);
                             usleep(1000000);
                             Streak = true;
                         }
 
                         if (atLeastThreeInAColumn(grid, streakPos, howMany)) {
-                            p1.score = p1.score + (grid[streakPos.ord][streakPos.abs] * howMany);
+                            p.score = p.score + (grid[streakPos.ord][streakPos.abs] * howMany);
                             removalInColumn(grid, streakPos, howMany);
-                            displayGrid(grid, pos,p1, coup, KMatSize);
+                            displayGrid(grid, pos,p, coup, KMatSize);
                             usleep(1000000);
                             Streak = true;
                         }
@@ -649,7 +652,13 @@ player classicMode(mat &grid, size_t &KMatSize, unsigned &KNbCandies, maPosition
             }
         }
     }
-    return p1;
+    affichElemDecor(KGrandeCase, 35,1);
+    goTo(70,3);
+    cout << "Congratulations !" << flush;
+    goTo(70,4);
+    cout << "Your score : " << p.score << flush;
+
+    return p;
 }
 
 unsigned duelMode(mat &grid, size_t &KMatSize, unsigned &KNbCandies, maPosition &pos){ // return 0 if it's a tie or 1 or 2 depending on the winner
@@ -705,9 +714,6 @@ int main(){
     if (select == 0) classicMode(grid, KMatSize, KNbCandies, pos);
     else if (select == 1) duelMode(grid, KMatSize, KNbCandies, pos);
     //else if (select == 2) leaderboard();
-
-
-    cout << "Votre choix est " << select << endl;
 
     input.disableRawMode();
     return 0;
