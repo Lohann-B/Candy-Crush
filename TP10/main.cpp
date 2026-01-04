@@ -657,6 +657,30 @@ Joueur classicMode(mat &grid, size_t &KMatSize, unsigned &KNbCandies, maPosition
     return p;
 }
 
+void refill(mat &grid, unsigned KNbCandies){
+    // grid est carrée
+    size_t i =0;
+    bool flag;
+    while (i<grid.size()){
+        flag = false;
+        if(grid[grid.size()-1][i]==0){
+            grid[grid.size()-1][i]= rand() % KNbCandies + 1;
+        }
+        size_t j = grid.size()-1;
+        while (j>0){
+            if (grid[j-1][i]==0){
+                flag = true;
+                grid[j-1][i]=grid[j][i];
+                grid[j][i]=0;
+            }
+            j-=1;
+        }
+        if (!flag){
+            i+=1;
+        }
+        
+    }
+}
 Joueur endlessMode(mat &grid, size_t &KMatSize, unsigned &KNbCandies, maPosition &pos){
     char c;
     bool gameStarted = false;
