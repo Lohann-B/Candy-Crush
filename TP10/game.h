@@ -1,0 +1,31 @@
+#ifndef GAME_H
+#define GAME_H
+// --- INCLUSION ---
+#include<vector>
+#include<ctime>
+#include<cstdlib>
+
+// --- ALIAS ---
+typedef std::vector<unsigned> line;
+typedef std::vector<line> mat;
+
+// --- STRUCTURE ---
+struct maPosition{
+    size_t abs = 0;
+    size_t ord = 0;
+};
+
+//--- FONCTIONS ---
+void initGrid (mat & grid, const size_t & matSize, const unsigned &KNbCandies);
+
+void inMakeAMove(maPosition & pos, char & direction);
+void inPosMakeAMove(mat & grid, maPosition & pos, char &c);
+void makeAMove (mat & grid, maPosition & pos, const char & direction);
+
+bool atLeastThreeInAColumn(const mat & grid, maPosition & pos, unsigned & howMany);
+bool atLeastThreeInARow(const mat &grid, maPosition &pos, unsigned &howMany);
+
+void removalInColumn (mat &grid, maPosition &pos, const unsigned  &howMany);
+void removalInRow (mat &grid, maPosition &pos, const unsigned  &howMany);
+
+#endif
