@@ -4,6 +4,7 @@
 #include<vector>
 #include<ctime>
 #include<cstdlib>
+using namespace std;
 
 // --- ALIAS ---
 typedef std::vector<unsigned> line;
