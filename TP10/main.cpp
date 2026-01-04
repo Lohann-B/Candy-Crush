@@ -652,6 +652,8 @@ player classicMode(mat &grid, size_t &KMatSize, unsigned &KNbCandies, maPosition
             }
         }
     }
+    
+    clearScreen();
     affichElemDecor(KGrandeCase, 35,1);
     goTo(70,3);
     cout << "Congratulations !" << flush;
