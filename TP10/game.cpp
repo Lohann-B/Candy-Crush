@@ -230,11 +230,7 @@ void removalInRow (mat &grid, maPosition &pos, const unsigned  &howMany){
     }
 }
 
-struct Joueur {
-    string nom;
-    size_t score;
-};
-
+// --- TRISTAN ---
 vector<Joueur> lire_score(string mode) {
     string fname = mode + ".txt";
     ifstream file(fname);
