@@ -392,7 +392,12 @@ void affichVectLine(const line &v, const unsigned int &numLigne, const maPositio
             cout << "\033[5;7;1m";
         }
         if (elem == 0){
-            couleur(0);
+            if (numLigne == pos.ord && numCol == pos.abs){
+                cout << "\033[5;7;1m";
+            }
+            else{
+                couleur(0);
+            }
             cout << " ";
         }
         else{
