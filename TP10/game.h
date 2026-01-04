@@ -9,10 +9,15 @@
 typedef std::vector<unsigned> line;
 typedef std::vector<line> mat;
 
-// --- STRUCTURE ---
+// --- STRUCTURES ---
 struct maPosition{
     size_t abs = 0;
     size_t ord = 0;
+};
+
+struct Joueur {
+    string nom;
+    size_t score;
 };
 
 //--- FONCTIONS ---
