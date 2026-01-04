@@ -106,6 +106,123 @@ void affichVectCoulStr(vector<string> & v){
     cout << endl;
 }
 
+void affichElemDecor(vector<string> &Element,size_t x,size_t y){
+    for (size_t i = 0; i < Element.size(); ++i){
+        goTo(x,y-i);
+        cout << Element[Element.size()-1-i] << flush;
+        usleep(15000);
+    }
+}
+
+void affichDecor(){
+    vector <string> Decor1{
+        "      _ _ _ _",
+        "    .         .",
+        "  /             \\",
+        " /      --    ---\\",
+        "|--   -    ---    |",
+        "|  ---            |",
+        "|                 |",
+        "|                 |",
+        "|                 |",
+        "|                 |",
+        "|                 |",
+        "|                 |",
+        "|                 |",
+        "|                 |",
+        "|                 |",
+        "|                 |",
+    };
+
+    vector <string> Decor2{
+        "  _ _ _",
+        ".       .",
+        "-  ---   |",
+        " --   -  |",
+        "       --|",
+        "         |",
+        "         |",
+        "         |",
+        "         |",
+        "         |",
+        "         |",
+        "         |",
+    };
+
+    vector <string> Decor3{
+        "               .",
+        "              /   .",
+        "         =  =     . .",
+        "      =        = '    .",
+        "     =          =  __ .",
+        ". __ =          =",
+        " .    =        =",
+        "  .  ;   =  =",
+        "    .   /",
+        "       .",
+    };
+
+    vector <string> Decor4{
+        "   _ _ _",
+        " .       .",
+        "|--  --   ",
+        "|  --  ---",
+        "|         ",
+        "|         ",
+        "|         ",
+        "|         ",
+        "|         ",
+        "|         ",
+        "|         ",
+        "|         ",
+    };
+
+    vector <string> Decor5{
+        "      _ _ _ _",
+        "    .         .",
+        "  /             \\",
+        " /            ---\\",
+        "|   ----  ---     |",
+        "|---    --        |",
+        "|                 |",
+        "|                 |",
+        "|                 |",
+        "|                 |",
+        "|                 |",
+        "|                 |",
+        "|                 |",
+        "|                 |",
+        "|                 |",
+        "|                 |",
+    };
+
+    vector<int> colors = {31, 33, 32, 34, 35, 36, 0};
+    couleur(1);
+    for (size_t i = 0; i < Decor3.size(); ++i){
+        couleur(colors[i % colors.size()]);
+        goTo(69,25+i);
+        cout << Decor3[i] << flush;
+        usleep(10000);
+    }
+
+    couleur(KMAgenta);
+    affichElemDecor(Decor1,25,37);
+    usleep(300000);
+
+    couleur(KRouge);
+    affichElemDecor(Decor5,119,37);
+    usleep(150000);
+
+    couleur(KVert);
+    affichElemDecor(Decor2,44,37);
+    usleep(90000);
+
+    couleur(KCyan);
+    affichElemDecor(Decor4,109,37);
+
+    couleur(KReset);
+}
+
 // --- INITIALISATION ---
 size_t initMatSize(){
     string input;
@@ -161,19 +278,47 @@ size_t initMatSize(){
 unsigned initNbCandies(){
     string input;
     unsigned nb;
+    vector <string> nbRequest {
+        "",
+        "",
+        "                           ________________________________________________________________________________________",
+        "                         .                                                                                           .",
+        "                        |                                                                                             |",
+        "                        |                         Veuillez saisir le nombre de bonbons :                              |",
+        "                        |                                                                                             |",
+        "                        |                                                                                             |",
+        "                        |                                                                                             |",
+        "                         ' __________________________________________________________________________________________'",
+    };
 
+    clearScreen();
+    affichVectStr(nbRequest);
     while (true){
-        cout << "Combien de type de bonbon ? (MAX 7) : " << flush;
+        goTo(90,6);
         input = inputUser(1);
 
         if (input.empty()) {
-            cout << endl << "Errreur : Saisie vide ! " << endl;
+            clearScreen();
+            affichVectStr(nbRequest);
+
+            goTo(60,8);
+            couleur(KRouge);
+            cout <<"Errreur : Saisie vide ! " <<  flush;
+            couleur(KReset);
             continue;
         }
 
         nb = stoi(input);
 
-        if (nb > 7 || nb < 2) cout << endl << "Erreur : Veuillez saisir un nombre compris entre 2 et 7"<<endl;
+        if (nb > 7 || nb < 2){
+            clearScreen();
+            affichVectStr(nbRequest);
+
+            goTo(51,8);
+            couleur(KRouge);
+            cout << "Erreur : Veuillez saisir un nombre compris entre 2 et 7 ! " <<endl;
+            couleur(KReset);
+        }
         else break;
     }
 
@@ -310,35 +455,16 @@ void loadingScreen(){
         "                                                       |__|  |_| |___|___|___|  |_____|_|_|_| |___|_|  "
     };
 
-    vector <string> Decor{
-        "                                  _ _ _ _                                                                                    _ _ _ _",
-        "                                .         .                                                                                .         .",
-        "                              /             \\	                                                                         /             \\",
-        "                             /      --    ---\\                                                                          /            ---\\",
-        "                            |--   -    ---    |  _ _ _                                                          _ _ _  |   ----  ---     |",
-        "                            |  ---            |.       .                                                      .       .|---    --        |",
-        "                            |                 |-  ---   |                              .                     |--  --   |                 |",
-        "                            |                 | --   -  |                             /   .                  |  --  ---|                 |",
-        "                            |                 |       --|                        =  =     . .                |         |                 |",
-        "                            |                 |         |                     =        = '    .              |         |                 |",
-        "                            |                 |         |                    =          =  __ .              |         |                 |",
-        "                            |                 |         |               . __ =          =                    |         |                 |",
-        "                            |                 |         |                .    =        =                     |         |                 |",
-        "                            |                 |         |                 .  ;   =  =                        |         |                 |",
-        "                            |                 |         |                   .   /                            |         |                 |",
-        "                            |                 |         |                      .                             |         |                 |",
-    };
-
     couleur(KReset);
     affichVectCoulStr(candyCrush);
 
     couleur(KFlash);
-    couleur(KRouge);
+    couleur(KJaune);
     affichVectStr(PressEnter);
     couleur(KReset);
 
     couleur(KCyan);
-    affichVectStr(Decor);
+    affichDecor();
     couleur(KReset);
 }
 
@@ -366,10 +492,10 @@ int main(){
         if (c==10 && !gameStarted){
 
             KMatSize = initMatSize();
-            cout << "Votre choix : " << KMatSize << "\r\n\n";
+            usleep(100000);
 
             KNbCandies = initNbCandies();
-            cout << "Votre choix : " << KNbCandies << "\r\n\n";
+            usleep(1000000);
 
             grid.resize(KMatSize);
             initGrid(grid, KMatSize, KNbCandies);
