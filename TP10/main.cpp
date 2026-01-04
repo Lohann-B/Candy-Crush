@@ -5,12 +5,30 @@
 #include <unistd.h>
 using namespace std;
 
-string inputUser(unsigned sizeMax){
+string inputDigitUser(unsigned sizeMax){
     string input = "";
     char c;
 
     while (cin.get(c) && c!=10) {
         if (isdigit(c) && input.size()<sizeMax){
+            input += c;
+            cout << c << flush;
+        }
+        else if ( c == 127 && !input.empty()) {
+            input.pop_back();
+            cout << "\b \b" << flush;
+        }
+    }
+    cout << endl;
+    return input;
+}
+
+string inputUser(unsigned sizeMax){
+    string input = "";
+    char c;
+
+    while (cin.get(c) && c!=10) {
+        if (input.size()<sizeMax){
             input += c;
             cout << c << flush;
         }
@@ -40,6 +58,22 @@ const unsigned KMAgenta (35);
 const unsigned KCyan    (36);
 
 // --- DECLARATION ELEMENTS GRAPHIQUES TERMINAL ---
+const vector <string> KCandyCrush{
+    "||       _____          ____  _____   ______        _____    _____      _____             _____        _____    ____   ____          ______   ____   ____ ",
+    "||   ___|\\    \\    ____|\\   \\|\\    \\ |\\     \\   ___|\\    \\  |\\    \\    /    /|        ___|\\    \\   ___|\\    \\  |    | |    |     ___|\\     \\ |    | |    |",
+    "||  /    /\\    \\  /    /\\    \\\\\\    \\| \\     \\ |    |\\    \\ | \\    \\  /    / |       /    /\\    \\ |    |\\    \\ |    | |    |    |    |\\     \\|    | |    |",
+    "|| |    |  |    ||    |  |    |\\|    \\  \\     ||    | |    ||  \\____\\/    /  /      |    |  |    ||    | |    ||    | |    |    |    |/____/||    |_|    |",
+    "|| |    |  |____||    |__|    | |     \\  |    ||    | |    | \\ |    /    /  /       |    |  |____||    |/____/ |    | |    | ___|    \\|   | ||    .-.    |",
+    "|| |    |   ____ |    .--.    | |      \\ |    ||    | |    |  \\|___/    /  /        |    |   ____ |    |\\    \\ |    | |    ||    \\    \\___|/ |    | |    |",
+    "|| |    |  |    ||    |  |    | |    |\\ \\|    ||    | |    |      /    /  /         |    |  |    ||    | |    ||    | |    ||    |\\     \\    |    | |    |",
+    "|| |\\ ___\\/    /||____|  |____| |____||\\_____/||____|/____/|     /____/  /          |\\ ___\\/    /||____| |____||\\___\\_|____||\\ ___\\|_____|   |____| |____|",
+    "|| | |   /____/ ||    |  |    | |    |/ \\|   |||    /    | |    |`    | /           | |   /____/ ||    | |    || |    |    || |    |     |   |    | |    |",
+    "||  \\|___|    | /|____|  |____| |____|   |___|/|____|____|/     |_____|/             \\|___|    | /|____| |____| \\|____|____| \\|____|_____|   |____| |____|",
+    "||    \\( |____|/   \\(      )/     \\(       )/    \\(    )/          )/                  \\( |____|/   \\(     )/      \\(   )/      \\(    )/       \\(     )/  ",
+    "||     '   )/       '      '       '       '      '    '           '                    '   )/       '     '        '   '        '    '         '     '   ",
+    "||         '                                                                                '                                                             ",
+};
+
 const vector<string> KGrandeCase{
     "   ________________________________________________________________________________________",
     " .                                                                                          .",
@@ -59,6 +93,13 @@ const vector<string> KPetiteCase{
     "    |                                                                                    |",
     "    |                                                                                    |",
     "     ' _________________________________________________________________________________'",
+};
+
+vector <string> KPressEnter{
+    "                                                        _____                    _____     _           ",
+    "                                                       |  _  |___ ___ ___ ___   |   __|___| |_ ___ ___ ",
+    "                                                       |   __|  _| -_|_ -|_ -|  |   __|   |  _| -_|  _|",
+    "                                                       |__|  |_| |___|___|___|  |_____|_|_|_| |___|_|  "
 };
 
 const vector<string> KPLAY{
@@ -91,17 +132,23 @@ public:
         tcgetattr(STDIN_FILENO, &term);
         _oldTerm = term;
 
-        term.c_lflag &= ~(ICANON | ECHO); // Désactive Entrée et l'affichage
+        term.c_lflag &= ~(ICANON | ECHO); // Désactive entrée et affichage
         tcsetattr(STDIN_FILENO, TCSANOW, &term);
     }
 
-    // Restore les paramètres d'origine
     void disableRawMode() {
         tcsetattr(STDIN_FILENO, TCSANOW, &_oldTerm);
     }
 
 private:
     termios _oldTerm;
+};
+
+
+class player {
+public:
+    string name;
+    unsigned score = 0;
 };
 
 // --- AFFICHAGE ---
@@ -294,7 +341,7 @@ size_t initMatSize(){
 
     while (true){
         goTo(93,6);
-        input = inputUser(2);
+        input = inputDigitUser(2);
 
         if (input.empty()) {
             clearScreen();
@@ -345,7 +392,7 @@ unsigned initNbCandies(){
     affichVectStr(nbRequest);
     while (true){
         goTo(90,6);
-        input = inputUser(1);
+        input = inputDigitUser(1);
 
         if (input.empty()) {
             clearScreen();
@@ -371,9 +418,33 @@ unsigned initNbCandies(){
         }
         else break;
     }
-
     return nb;
+}
 
+void initPName(player &p1){
+    string input;
+
+    clearScreen();
+    affichElemDecor(KGrandeCase, 24,3,30000);
+    goTo(57, 6);
+    cout << " Entrez votre nom : " << flush;
+
+    while (true){
+        goTo(77,6);
+        input = inputUser(20);
+
+        if (input.empty()) {
+            clearScreen();
+
+            goTo(60,8);
+            couleur(KRouge);
+            cout <<"Errreur : Saisie vide ! " <<  flush;
+            couleur(KReset);
+            continue;
+        }
+        else break;
+    }
+    p1.name = input;
 }
 
 // --- MATRICE ---
@@ -420,7 +491,6 @@ void affichBarre(mat & grid){
             barre += '-';
         }
     }
-
     cout << barre << endl;
 }
 
@@ -445,7 +515,7 @@ void affichAbs(mat & grid){
     cout << endl;
 }
 
-void displayGrid(mat & grid, maPosition &pos){
+void displayGrid(mat & grid, maPosition &pos, player p, unsigned coup, size_t KMatSize){
     clearScreen();
     couleur(KReset);
 
@@ -454,8 +524,12 @@ void displayGrid(mat & grid, maPosition &pos){
 
     for (unsigned int numLigne = 0; numLigne < grid.size(); numLigne++){
         affichVectLine(grid[numLigne],numLigne, pos);
-        affichBarre(grid);
     }
+
+    affichBarre(grid);
+
+    cout << "\r\n|| " << p.name <<"'s score : " << p.score << endl;
+    cout << "|| " << "Nombre de coups restants : " << coup - KMatSize <<endl;
 }
 
 void displayMenu(const unsigned &select){
@@ -504,13 +578,16 @@ void moveMenu (const char &c, unsigned &select){
     }
 }
 
-unsigned classicMode(mat &grid, size_t &KMatSize, unsigned &KNbCandies, maPosition &pos){
+player classicMode(mat &grid, size_t &KMatSize, unsigned &KNbCandies, maPosition &pos){
     char c;
     bool gameStarted = false;
     bool caseSelect = false;
 
-    while (cin.get(c) && c!=27){
-        if (c==10 && !gameStarted){
+    player p1;
+    unsigned coup = 0;
+
+    while (cin.get(c) && c!=27 && coup != KMatSize){
+        if (!gameStarted){
 
             KMatSize = initMatSize();
             usleep(100000);
@@ -518,10 +595,13 @@ unsigned classicMode(mat &grid, size_t &KMatSize, unsigned &KNbCandies, maPositi
             KNbCandies = initNbCandies();
             usleep(1000000);
 
+            initPName(p1);
+            usleep(1000000);
+
             grid.resize(KMatSize);
             initGrid(grid, KMatSize, KNbCandies);
 
-            displayGrid(grid, pos); // affichage 1
+            displayGrid(grid, pos, p1, coup, KMatSize); // affichage 1
 
             usleep(1000000);
 
@@ -533,15 +613,16 @@ unsigned classicMode(mat &grid, size_t &KMatSize, unsigned &KNbCandies, maPositi
                 if (c==10) caseSelect = true;
                 else{
                     inPosMakeAMove(grid, pos, c);
-                    displayGrid(grid,pos);
+                    displayGrid(grid,pos,p1, coup, KMatSize);
                 }
             } else {
                 if ((c=='z' && pos.ord!=0) || (c=='s' && pos.ord!=KMatSize-1) || (c=='q' && pos.abs!=0) || (c=='d' && pos.abs!=KMatSize-1)){
                     char direction = c;
                     makeAMove(grid, pos, direction);
+                    ++ coup;
 
                     caseSelect = false;
-                    displayGrid(grid,pos);
+                    displayGrid(grid,pos,p1, coup, KMatSize);
 
                     bool Streak = true;
                     maPosition streakPos;
@@ -551,14 +632,15 @@ unsigned classicMode(mat &grid, size_t &KMatSize, unsigned &KNbCandies, maPositi
 
                         if (atLeastThreeInARow(grid, streakPos, howMany)) {
                             removalInRow(grid, streakPos, howMany);
-                            displayGrid(grid, pos);
+                            displayGrid(grid, pos,p1, coup, KMatSize);
                             usleep(1000000);
                             Streak = true;
                         }
 
                         if (atLeastThreeInAColumn(grid, streakPos, howMany)) {
+                            p1.score = p1.score + (grid[streakPos.ord][streakPos.abs] * howMany);
                             removalInColumn(grid, streakPos, howMany);
-                            displayGrid(grid, pos);
+                            displayGrid(grid, pos,p1, coup, KMatSize);
                             usleep(1000000);
                             Streak = true;
                         }
@@ -567,39 +649,20 @@ unsigned classicMode(mat &grid, size_t &KMatSize, unsigned &KNbCandies, maPositi
             }
         }
     }
+    return p1;
+}
+
+unsigned duelMode(mat &grid, size_t &KMatSize, unsigned &KNbCandies, maPosition &pos){ // return 0 if it's a tie or 1 or 2 depending on the winner
     return 0;
 }
 
 void loadingScreen(){
-    const vector <string> KCandyCrush{
-        "||       _____          ____  _____   ______        _____    _____      _____             _____        _____    ____   ____          ______   ____   ____ ",
-        "||   ___|\\    \\    ____|\\   \\|\\    \\ |\\     \\   ___|\\    \\  |\\    \\    /    /|        ___|\\    \\   ___|\\    \\  |    | |    |     ___|\\     \\ |    | |    |",
-        "||  /    /\\    \\  /    /\\    \\\\\\    \\| \\     \\ |    |\\    \\ | \\    \\  /    / |       /    /\\    \\ |    |\\    \\ |    | |    |    |    |\\     \\|    | |    |",
-        "|| |    |  |    ||    |  |    |\\|    \\  \\     ||    | |    ||  \\____\\/    /  /      |    |  |    ||    | |    ||    | |    |    |    |/____/||    |_|    |",
-        "|| |    |  |____||    |__|    | |     \\  |    ||    | |    | \\ |    /    /  /       |    |  |____||    |/____/ |    | |    | ___|    \\|   | ||    .-.    |",
-        "|| |    |   ____ |    .--.    | |      \\ |    ||    | |    |  \\|___/    /  /        |    |   ____ |    |\\    \\ |    | |    ||    \\    \\___|/ |    | |    |",
-        "|| |    |  |    ||    |  |    | |    |\\ \\|    ||    | |    |      /    /  /         |    |  |    ||    | |    ||    | |    ||    |\\     \\    |    | |    |",
-        "|| |\\ ___\\/    /||____|  |____| |____||\\_____/||____|/____/|     /____/  /          |\\ ___\\/    /||____| |____||\\___\\_|____||\\ ___\\|_____|   |____| |____|",
-        "|| | |   /____/ ||    |  |    | |    |/ \\|   |||    /    | |    |`    | /           | |   /____/ ||    | |    || |    |    || |    |     |   |    | |    |",
-        "||  \\|___|    | /|____|  |____| |____|   |___|/|____|____|/     |_____|/             \\|___|    | /|____| |____| \\|____|____| \\|____|_____|   |____| |____|",
-        "||    \\( |____|/   \\(      )/     \\(       )/    \\(    )/          )/                  \\( |____|/   \\(     )/      \\(   )/      \\(    )/       \\(     )/  ",
-        "||     '   )/       '      '       '       '      '    '           '                    '   )/       '     '        '   '        '    '         '     '   ",
-        "||         '                                                                                '                                                             ",
-        };
-
-    vector <string> PressEnter{
-        "                                                        _____                    _____     _           ",
-        "                                                       |  _  |___ ___ ___ ___   |   __|___| |_ ___ ___ ",
-        "                                                       |   __|  _| -_|_ -|_ -|  |   __|   |  _| -_|  _|",
-        "                                                       |__|  |_| |___|___|___|  |_____|_|_|_| |___|_|  "
-    };
-
     couleur(KReset);
     affichVectCoulStr(KCandyCrush);
 
     couleur(KFlash);
     couleur(KJaune);
-    affichVectStr(PressEnter);
+    affichVectStr(KPressEnter);
     couleur(KReset);
 
     couleur(KCyan);
@@ -627,19 +690,22 @@ int main(){
 
     char c;
     while (cin.get(c) && c!=27){
-        if (loadingScreen){
-            if (c == 10){
-                displayMenu(select);
-                loadingScreen = false;
+            if (loadingScreen){
+                if (c == 10){
+                    displayMenu(select);
+                    loadingScreen = false;
+                }
             }
-        }
-        else{
-            if (c==10) break;
-            moveMenu(c,select);
-            displayMenu(select);
-        }
+            else{
+                if (c==10) break;
+                moveMenu(c,select);
+                displayMenu(select);
+            }
     }
     if (select == 0) classicMode(grid, KMatSize, KNbCandies, pos);
+    else if (select == 1) duelMode(grid, KMatSize, KNbCandies, pos);
+    //else if (select == 2) leaderboard();
+
 
     cout << "Votre choix est " << select << endl;
 
