@@ -920,9 +920,17 @@ int main(){
                 displayMenu(select);
             }
     }
-    if (select == 0) classicMode(grid, KMatSize, KNbCandies, pos);
+    Joueur j;
+    if (select == 0) {
+        j =classicMode(grid, KMatSize, KNbCandies, pos);
+    }
     //else if (select == 1) duelMode(grid, KMatSize, KNbCandies, pos);
     //else if (select == 2) leaderboard();
+    else if (select == 3){
+        j=endlessMode(grid, KMatSize, KNbCandies, pos);
+    }
+
+    
 
     input.disableRawMode();
     return 0;
