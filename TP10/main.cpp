@@ -24,51 +24,8 @@ string inputUser(unsigned sizeMax){
     return input;
 }
 
-// --- INITIALISATION ---
-size_t initMatSize(){
-    string input;
-    size_t size;
-
-    while (true){
-        cout << "Taille de la matrice : " << flush;
-        input = inputUser(2);
-
-        if (input.empty()) {
-            cout << endl << "Errreur : Saisie vide ! " << endl;
-            continue;
-        }
-
-        size = stoi(input);
-
-        if (size < 4) cout << endl << "Veuillez saisir une taille >= 4"<<endl;
-        else break;
-    }
-
-    return size;
-
-}
-
-unsigned initNbCandies(){
-    string input;
-    unsigned nb;
-
-    while (true){
-        cout << "Combien de type de bonbon ? (MAX 7) : " << flush;
-        input = inputUser(1);
-
-        if (input.empty()) {
-            cout << endl << "Errreur : Saisie vide ! " << endl;
-            continue;
-        }
-
-        nb = stoi(input);
-
-        if (nb > 7 || nb < 2) cout << endl << "Erreur : Veuillez saisir un nombre compris entre 2 et 7"<<endl;
-        else break;
-    }
-
-    return nb;
-
+void goTo (unsigned x, unsigned y) {
+    cout << "\033[" << y << ";" << x << "H" << flush;
 }
 
 
@@ -147,6 +104,81 @@ void affichVectCoulStr(vector<string> & v){
         i++;
     }
     cout << endl;
+}
+
+// --- INITIALISATION ---
+size_t initMatSize(){
+    string input;
+    size_t size;
+    vector <string> sizeRequest {
+        "",
+        "",
+        "                           ________________________________________________________________________________________",
+        "                         .                                                                                           .",
+        "                        |                                                                                             |",
+        "                        |                         Veuillez saisir la taille de la matrice :                           |",
+        "                        |                                                                                             |",
+        "                        |                                                                                             |",
+        "                        |                                                                                             |",
+        "                         ' __________________________________________________________________________________________'",
+    };
+
+    clearScreen();
+    affichVectStr(sizeRequest);
+    while (true){
+        goTo(93,6);
+        input = inputUser(2);
+
+        if (input.empty()) {
+            clearScreen();
+            affichVectStr(sizeRequest);
+
+            goTo(60,8);
+            couleur(KRouge);
+            cout <<"Errreur : Saisie vide ! " <<  flush;
+            couleur(KReset);
+            continue;
+        }
+
+        size = stoi(input);
+
+        if (size < 4){
+            clearScreen();
+            affichVectStr(sizeRequest);
+
+            goTo(51,8);
+            couleur(KRouge);
+            cout << "Erreur : Veuillez saisir une taille >= 4 !" <<endl;
+            couleur(KReset);
+        }
+        else break;
+    }
+
+    return size;
+
+}
+
+unsigned initNbCandies(){
+    string input;
+    unsigned nb;
+
+    while (true){
+        cout << "Combien de type de bonbon ? (MAX 7) : " << flush;
+        input = inputUser(1);
+
+        if (input.empty()) {
+            cout << endl << "Errreur : Saisie vide ! " << endl;
+            continue;
+        }
+
+        nb = stoi(input);
+
+        if (nb > 7 || nb < 2) cout << endl << "Erreur : Veuillez saisir un nombre compris entre 2 et 7"<<endl;
+        else break;
+    }
+
+    return nb;
+
 }
 
 // --- MATRICE ---
