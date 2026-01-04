@@ -832,7 +832,9 @@ int main(){
     else if (select == 2) {
         string mode;
         cout << "Quel mode de jeu (classic, duel, endless) ? : ";
+        input.disableRawMode();
         cin >> mode;
+        input.enableRawMode();
         vector<Joueur> lb = lire_score( mode);
         tri_score(lb);
         if (lb.size()<10){
