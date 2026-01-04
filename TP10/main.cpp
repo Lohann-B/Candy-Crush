@@ -753,127 +753,6 @@ Joueur endlessMode(mat &grid, size_t &KMatSize, unsigned &KNbCandies, maPosition
     return p;
 }
 
-void refill(mat &grid, unsigned KNbCandies){
-    // grid est carrée
-    size_t i =0;
-    bool flag;
-    while (i<grid.size()){
-        flag = false;
-        if(grid[grid.size()-1][i]==0){
-            grid[grid.size()-1][i]= rand() % KNbCandies + 1;
-        }
-        size_t j = grid.size()-1;
-        while (j>0){
-            if (grid[j-1][i]==0){
-                flag = true;
-                grid[j-1][i]=grid[j][i];
-                grid[j][i]=0;
-            }
-            j-=1;
-        }
-        if (!flag){
-            i+=1;
-        }
-        
-    }
-}
-
-Joueur endlessMode(mat &grid, size_t &KMatSize, unsigned &KNbCandies, maPosition &pos){
-    char c;
-    bool gameStarted = false;
-    bool caseSelect = false;
-
-    Joueur p;
-    unsigned coup = 1;
-
-    while (coup != 0 && cin.get(c) && c!=27){
-        if (!gameStarted){
-
-            KMatSize = initMatSize();
-            usleep(100000);
-
-            KNbCandies = initNbCandies();
-            usleep(1000000);
-
-            initPName(p);
-            usleep(1000000);
-
-            grid.resize(KMatSize);
-            initGrid(grid, KMatSize, KNbCandies);
-
-            coup=KMatSize;
-            usleep(1000000);
-
-            displayGrid(grid, pos, p, coup, KMatSize); // affichage 1
-
-            usleep(1000000);
-
-            gameStarted = true;
-            continue;
-        }
-        if (gameStarted){
-            if (!caseSelect){
-                if (c==10) caseSelect = true;
-                else{
-                    inPosMakeAMove(grid, pos, c);
-                    displayGrid(grid,pos,p, coup, KMatSize);
-                }
-            } else {
-                if ((c=='z' && pos.ord!=0) || (c=='s' && pos.ord!=KMatSize-1) || (c=='q' && pos.abs!=0) || (c=='d' && pos.abs!=KMatSize-1)){
-                    char direction = c;
-                    makeAMove(grid, pos, direction);
-                    coup -= 1;
-
-                    caseSelect = false;
-                    displayGrid(grid,pos,p, coup, KMatSize);
-
-                    bool Streak = true;
-                    maPosition streakPos;
-                    unsigned howMany;
-                    int points = 0;
-                    while (Streak) {
-                        Streak = false;
-
-                        if (atLeastThreeInARow(grid, streakPos, howMany)) {
-                            p.score = p.score + (grid[streakPos.ord][streakPos.abs] * howMany);
-                            points += (grid[streakPos.ord][streakPos.abs] * howMany);
-                            removalInRow(grid, streakPos, howMany);
-                            displayGrid(grid, pos,p, coup, KMatSize);
-                            usleep(1000000);
-                            Streak = true;
-                            
-                            refill(grid,KNbCandies); 
-                            
-                        }
-
-                        if (atLeastThreeInAColumn(grid, streakPos, howMany)) {
-                            p.score = p.score + (grid[streakPos.ord][streakPos.abs] * howMany);
-                            points += (grid[streakPos.ord][streakPos.abs] * howMany);
-                            removalInColumn(grid, streakPos, howMany);
-                            displayGrid(grid, pos,p, coup, KMatSize);
-                            usleep(1000000);
-                            Streak = true;
-                            
-                            refill(grid,KNbCandies);
-                            
-                        }
-                    }
-                    coup += points%10;
-                }
-            }
-        }
-    }
-
-    clearScreen();
-    affichElemDecor(KGrandeCase, 35,1);
-    goTo(70,3);
-    cout << "Congratulations !" << flush;
-    goTo(70,4);
-    cout << "Your score : " << p.score << flush;
-
-    return p;
-}
-
 void loadingScreen(){
     couleur(KReset);
     affichVectCoulStr(KCandyCrush);
@@ -926,7 +805,23 @@ int main(){
         ajouter_score("classic" , j.nom, j.score);
     }
     //else if (select == 1) {duelMode(grid, KMatSize, KNbCandies, pos);}
-    //else if (select == 2) {leaderboard();}
+    else if (select == 2) {
+        string mode;
+        cout << "Quel mode de jeu (classic, duel, endless) ? : ";
+        cin >> mode;
+        vector<Joueur> lb = lire_score( mode);
+        tri_score(lb);
+        if (lb.size()<10){
+            for (size_t i=0; i<lb.size(); ++i){
+                cout << lb[i].nom << " : " << lb[i].score << endl;
+            }
+        } else {
+            for (size_t i=0; i<10; ++i){
+                cout << lb[i].nom << " : " << lb[i].score << endl;
+            }
+        }
+        
+    }
     else if (select == 3){
         j=endlessMode(grid, KMatSize, KNbCandies, pos);
         ajouter_score("endless", j.nom, j.score);
