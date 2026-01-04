@@ -281,20 +281,20 @@ void loadingScreen(){
     vector <string> Decor{
         "                                  _ _ _ _                                                                                    _ _ _ _",
         "                                .         .                                                                                .         .",
-        "                              /             \\	                                                                        /             \\",
+        "                              /             \\	                                                                         /             \\",
         "                             /      --    ---\\                                                                          /            ---\\",
-        "                            |--   -    ---   |  _ _ _                                                           _ _ _  |   ----  ---    |",
-        "                            |  ---           |.       .                                                       .       .|---    --       |",
-        "                            |                |-  ---   |                              .                      |--  --   |                |",
-        "                            |                | --   -  |                             /   .                   |  --  ---|                |",
-        "                            |                |       --|                        =  =     . .                 |         |                |",
-        "                            |                |         |                     =        = '    .               |         |                |",
-        "                            |                |         |                    =          =  __ .               |         |                |",
-        "                            |                |         |               . __ =          =                     |         |                |",
-        "                            |                |         |                .    =        =                      |         |                |",
-        "                            |                |         |                 .  ;   =  =                         |         |                |",
-        "                            |                |         |                   .   /                             |         |                |",
-        "                            |                |         |                      .                              |         |                |",
+        "                            |--   -    ---    |  _ _ _                                                          _ _ _  |   ----  ---     |",
+        "                            |  ---            |.       .                                                      .       .|---    --        |",
+        "                            |                 |-  ---   |                              .                     |--  --   |                 |",
+        "                            |                 | --   -  |                             /   .                  |  --  ---|                 |",
+        "                            |                 |       --|                        =  =     . .                |         |                 |",
+        "                            |                 |         |                     =        = '    .              |         |                 |",
+        "                            |                 |         |                    =          =  __ .              |         |                 |",
+        "                            |                 |         |               . __ =          =                    |         |                 |",
+        "                            |                 |         |                .    =        =                     |         |                 |",
+        "                            |                 |         |                 .  ;   =  =                        |         |                 |",
+        "                            |                 |         |                   .   /                            |         |                 |",
+        "                            |                 |         |                      .                             |         |                 |",
     };
 
     couleur(KReset);
@@ -305,6 +305,7 @@ void loadingScreen(){
     affichVectStr(PressEnter);
     couleur(KReset);
 
+    couleur(KCyan);
     affichVectStr(Decor);
     couleur(KReset);
 }
@@ -365,18 +366,19 @@ int main(){
                     displayGrid(grid,pos);
 
                     bool Streak = true;
+                    maPosition streakPos;
                     while (Streak) {
                         Streak = false;
 
-                        if (atLeastThreeInARow(grid, pos, howMany)) {
-                            removalInRow(grid, pos, howMany);
+                        if (atLeastThreeInARow(grid, streakPos, howMany)) {
+                            removalInRow(grid, streakPos, howMany);
                             displayGrid(grid, pos);
                             usleep(1000000);
                             Streak = true;
                         }
 
-                        if (atLeastThreeInAColumn(grid, pos, howMany)) {
-                            removalInColumn(grid, pos, howMany);
+                        if (atLeastThreeInAColumn(grid, streakPos, howMany)) {
+                            removalInColumn(grid, streakPos, howMany);
                             displayGrid(grid, pos);
                             usleep(1000000);
                             Streak = true;
