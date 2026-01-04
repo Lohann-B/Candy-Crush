@@ -1,6 +1,7 @@
 #ifndef GAME_H
 #define GAME_H
 // --- INCLUSION ---
+#include<string>
 #include<vector>
 #include<ctime>
 #include<cstdlib>
