@@ -1,5 +1,4 @@
 #include "game.h"
-#include "test.h"
 
 #include <iostream>
 #include <termios.h>
@@ -40,8 +39,51 @@ const unsigned KBleu    (34);
 const unsigned KMAgenta (35);
 const unsigned KCyan    (36);
 
-// --- STRUCTURE ---
+// --- DECLARATION ELEMENTS GRAPHIQUES TERMINAL ---
+const vector<string> KGrandeCase{
+    "   ________________________________________________________________________________________",
+    " .                                                                                          .",
+    "|                                                                                            |",
+    "|                                                                                            |",
+    "|                                                                                            |",
+    "|                                                                                            |",
+    "|                                                                                            |",
+    " ' _________________________________________________________________________________________'",
+};
 
+const vector<string> KPetiteCase{
+    "       ________________________________________________________________________________",
+    "     .                                                                                  .",
+    "    |                                                                                    |",
+    "    |                                                                                    |",
+    "    |                                                                                    |",
+    "    |                                                                                    |",
+    "     ' _________________________________________________________________________________'",
+};
+
+const vector<string> KPLAY{
+    " _____ __    _____ __ __ ",
+    "|  _  |  |  |  _  |  |  |",
+    "|   __|  |__|     |_   _|",
+    "|__|  |_____|__|__| |_|  ",
+};
+
+const vector<string> KDuel{
+    " ____          _",
+    "|    \\ _ _ ___| |",
+    "|  |  | | | -_| |",
+    "|____/|___|___|_|",
+};
+
+const vector<string> KLeaderboard{
+    " __              _         _                 _ ",
+    "|  |   ___ ___ _| |___ ___| |_ ___ ___ ___ _| |",
+    "|  |__| -_| .'| . | -_|  _| . | . | .'|  _| . |",
+    "|_____|___|__,|___|___|_| |___|___|__,|_| |___|",
+};
+
+
+// --- STRUCTURE ---
 class InputManager {
 public:
     void enableRawMode() {
@@ -91,11 +133,11 @@ void affichVectStr(vector<string> & v){
     cout << endl;
 }
 
-void affichVectCoulStr(vector<string> & v){
+void affichVectCoulStr(const vector<string> & v){
     vector<int> colors = {31, 33, 32, 34, 35, 36, 0};
 
     unsigned i =0;
-    for (string &elem : v){
+    for (string elem : v){
         couleur(colors[i % colors.size()]);
 
         cout << elem << endl;
@@ -106,15 +148,23 @@ void affichVectCoulStr(vector<string> & v){
     cout << endl;
 }
 
-void affichElemDecor(vector<string> &Element,size_t x,size_t y){
+void popElemDecor(const vector<string> &Element,size_t x,size_t y, size_t Delay = 0){
     for (size_t i = 0; i < Element.size(); ++i){
         goTo(x,y-i);
         cout << Element[Element.size()-1-i] << flush;
-        usleep(15000);
+        usleep(Delay);
     }
 }
 
-void affichDecor(){
+void affichElemDecor(const vector<string> &Element,size_t x,size_t y, size_t Delay = 0){
+    for (size_t i = 0; i < Element.size(); ++i){
+        goTo(x,y+i);
+        cout << Element[i] << flush;
+        usleep(Delay);
+    }
+}
+
+void affichDecor(size_t Delay = 0){
     vector <string> Decor1{
         "      _ _ _ _",
         "    .         .",
@@ -149,7 +199,7 @@ void affichDecor(){
         "         |",
     };
 
-    vector <string> Decor3{
+    const vector <string> Decor3{
         "               .",
         "              /   .",
         "         =  =     . .",
@@ -200,25 +250,24 @@ void affichDecor(){
     couleur(1);
     for (size_t i = 0; i < Decor3.size(); ++i){
         couleur(colors[i % colors.size()]);
-        goTo(69,25+i);
+        goTo(68,30+i);
         cout << Decor3[i] << flush;
-        usleep(10000);
     }
 
     couleur(KMAgenta);
-    affichElemDecor(Decor1,25,37);
-    usleep(300000);
+    popElemDecor(Decor1,25,42,Delay);
+    if (Delay !=0) usleep(300000);
 
     couleur(KRouge);
-    affichElemDecor(Decor5,119,37);
-    usleep(150000);
+    popElemDecor(Decor5,117,42,Delay);
+    if (Delay !=0) usleep(300000);
 
     couleur(KVert);
-    affichElemDecor(Decor2,44,37);
-    usleep(90000);
+    popElemDecor(Decor2,44,42,Delay);
+    if (Delay !=0) usleep(300000);
 
     couleur(KCyan);
-    affichElemDecor(Decor4,109,37);
+    popElemDecor(Decor4,107,42,Delay);
 
     couleur(KReset);
 }
@@ -242,6 +291,7 @@ size_t initMatSize(){
 
     clearScreen();
     affichVectStr(sizeRequest);
+
     while (true){
         goTo(93,6);
         input = inputUser(2);
@@ -405,34 +455,120 @@ void displayGrid(mat & grid, maPosition &pos){
     affichBarre(grid,'-');
 }
 
+void displayMenu(const unsigned &select){
+    clearScreen();
+
+    if (select==0){
+        couleur(1);
+        couleur(5);
+    }
+    couleur(KMAgenta);
+    affichElemDecor(KGrandeCase, 35,1);
+    affichElemDecor(KPLAY, 70,3);
+    couleur(KReset);
+
+    if (select==1){
+        couleur(1);
+        couleur(5);
+    }
+    couleur(KCyan);
+    affichElemDecor(KPetiteCase, 35,10);
+    affichElemDecor(KDuel, 74,11);
+    couleur(KReset);
+
+    if (select==2){
+        couleur(1);
+        couleur(5);
+    }
+    couleur(KVert);
+    affichElemDecor(KPetiteCase, 35,18);
+    affichElemDecor(KLeaderboard, 58,19);
+    couleur(KReset);
+
+    affichDecor();
+}
+
+
 // --- MAIN ---
-
-void game(){
-    //INITIALISATION VARIABLES
-    const size_t matSize = initMatSize();
-    const unsigned KNbCandies = initNbCandies();
-    mat grid (matSize);
-
-    maPosition pos;
-    char direction;
-
-    //INITIALISATION MATRICE
-    initGrid(grid, matSize,KNbCandies);
-    displayGrid(grid, pos);
-
-    //DÉROULEMENT DU JEU
-    cout << grid.size() << endl;
-
-    for (unsigned int i = 0; i < 5; i++){
-        inMakeAMove(pos,direction);
-        makeAMove(grid,pos,direction);
-        displayGrid(grid, pos);
-        cout << "Votre choix est " << grid[pos.ord][pos.abs] << " à échanger vers la direction de " << direction << endl;
+void moveMenu (const char &c, unsigned &select){
+    if (c=='z'){
+        if (select==0) select = 2;
+        else -- select;
+    }
+    else if (c=='s'){
+        if (select==2) select = 0;
+        else ++ select;
     }
 }
 
+unsigned classicMode(mat &grid, size_t &KMatSize, unsigned &KNbCandies, maPosition &pos){
+    char c;
+    bool gameStarted = false;
+    bool caseSelect = false;
+
+    while (cin.get(c) && c!=27){
+        if (c==10 && !gameStarted){
+
+            KMatSize = initMatSize();
+            usleep(100000);
+
+            KNbCandies = initNbCandies();
+            usleep(1000000);
+
+            grid.resize(KMatSize);
+            initGrid(grid, KMatSize, KNbCandies);
+
+            displayGrid(grid, pos); // affichage 1
+
+            usleep(1000000);
+
+            gameStarted = true;
+            continue;
+        }
+        if (gameStarted){
+            if (!caseSelect){
+                if (c==10) caseSelect = true;
+                else{
+                    inPosMakeAMove(grid, pos, c);
+                    displayGrid(grid,pos);
+                }
+            } else {
+                if ((c=='z' && pos.ord!=0) || (c=='s' && pos.ord!=KMatSize-1) || (c=='q' && pos.abs!=0) || (c=='d' && pos.abs!=KMatSize-1)){
+                    char direction = c;
+                    makeAMove(grid, pos, direction);
+
+                    caseSelect = false;
+                    displayGrid(grid,pos);
+
+                    bool Streak = true;
+                    maPosition streakPos;
+                    unsigned howMany;
+                    while (Streak) {
+                        Streak = false;
+
+                        if (atLeastThreeInARow(grid, streakPos, howMany)) {
+                            removalInRow(grid, streakPos, howMany);
+                            displayGrid(grid, pos);
+                            usleep(1000000);
+                            Streak = true;
+                        }
+
+                        if (atLeastThreeInAColumn(grid, streakPos, howMany)) {
+                            removalInColumn(grid, streakPos, howMany);
+                            displayGrid(grid, pos);
+                            usleep(1000000);
+                            Streak = true;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return 0;
+}
+
 void loadingScreen(){
-    vector <string> candyCrush{
+    const vector <string> KCandyCrush{
         "||       _____          ____  _____   ______        _____    _____      _____             _____        _____    ____   ____          ______   ____   ____ ",
         "||   ___|\\    \\    ____|\\   \\|\\    \\ |\\     \\   ___|\\    \\  |\\    \\    /    /|        ___|\\    \\   ___|\\    \\  |    | |    |     ___|\\     \\ |    | |    |",
         "||  /    /\\    \\  /    /\\    \\\\\\    \\| \\     \\ |    |\\    \\ | \\    \\  /    / |       /    /\\    \\ |    |\\    \\ |    | |    |    |    |\\     \\|    | |    |",
@@ -456,7 +592,7 @@ void loadingScreen(){
     };
 
     couleur(KReset);
-    affichVectCoulStr(candyCrush);
+    affichVectCoulStr(KCandyCrush);
 
     couleur(KFlash);
     couleur(KJaune);
@@ -464,7 +600,7 @@ void loadingScreen(){
     couleur(KReset);
 
     couleur(KCyan);
-    affichDecor();
+    affichDecor(15000);
     couleur(KReset);
 }
 
@@ -474,12 +610,7 @@ int main(){
     size_t KMatSize;
     unsigned KNbCandies;
 
-    bool gameStarted = false;
-    bool caseSelect = false;
-
     maPosition pos;
-    char direction;
-    unsigned howMany;
 
     clearScreen();
     loadingScreen();
@@ -487,65 +618,28 @@ int main(){
     InputManager input;
     input.enableRawMode();
 
+    bool loadingScreen = true;
+
+    unsigned select = 0;
+
     char c;
     while (cin.get(c) && c!=27){
-        if (c==10 && !gameStarted){
-
-            KMatSize = initMatSize();
-            usleep(100000);
-
-            KNbCandies = initNbCandies();
-            usleep(1000000);
-
-            grid.resize(KMatSize);
-            initGrid(grid, KMatSize, KNbCandies);
-
-            displayGrid(grid, pos); // affichage 1
-
-            usleep(1000000);
-
-            gameStarted = true;
-            continue;
-        }
-        if (gameStarted){
-
-            if (!caseSelect){
-                if (c==10) caseSelect = true;
-                else{
-                    inPosMakeAMove(grid, pos, c);
-                    displayGrid(grid,pos);
-                }
-            } else {
-                if ((c=='z' && pos.ord!=0) || (c=='s' && pos.ord!=KMatSize-1) || (c=='q' && pos.abs!=0) || (c=='d' && pos.abs!=KMatSize-1)){
-                    direction = c;
-                    makeAMove(grid, pos, direction);
-
-                    caseSelect = false;
-                    displayGrid(grid,pos);
-
-                    bool Streak = true;
-                    maPosition streakPos;
-                    while (Streak) {
-                        Streak = false;
-
-                        if (atLeastThreeInARow(grid, streakPos, howMany)) {
-                            removalInRow(grid, streakPos, howMany);
-                            displayGrid(grid, pos);
-                            usleep(1000000);
-                            Streak = true;
-                        }
-
-                        if (atLeastThreeInAColumn(grid, streakPos, howMany)) {
-                            removalInColumn(grid, streakPos, howMany);
-                            displayGrid(grid, pos);
-                            usleep(1000000);
-                            Streak = true;
-                        }
-                    }
-                }
+        if (loadingScreen){
+            if (c == 10){
+                displayMenu(select);
+                loadingScreen = false;
             }
         }
+        else{
+            if (c==10) break;
+            moveMenu(c,select);
+            displayMenu(select);
+        }
     }
+    if (select == 0) classicMode(grid, KMatSize, KNbCandies, pos);
+
+    cout << "Votre choix est " << select << endl;
+
     input.disableRawMode();
     return 0;
 }
