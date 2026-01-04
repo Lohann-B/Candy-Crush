@@ -109,11 +109,11 @@ const vector<string> KPLAY{
     "|__|  |_____|__|__| |_|  ",
 };
 
-const vector<string> KDuel{
-    " ____          _",
-    "|    \\ _ _ ___| |",
-    "|  |  | | | -_| |",
-    "|____/|___|___|_|",
+const vector<string> KEndless{
+    " _____       _ _",
+    "|   __|___ _| | |___ ___ ___",
+    "|   __|   | . | | -_|_ -|_ -|",
+    "|_____|_|_|___|_|___|___|___|",
 };
 
 const vector<string> KLeaderboard{
@@ -544,9 +544,10 @@ void displayMenu(const unsigned &select){
         couleur(1);
         couleur(5);
     }
+
     couleur(KCyan);
     affichElemDecor(KPetiteCase, 35,10);
-    affichElemDecor(KDuel, 74,11);
+    affichElemDecor(KEndless, 68,11);
     couleur(KReset);
 
     if (select==2){
@@ -656,10 +657,6 @@ Joueur classicMode(mat &grid, size_t &KMatSize, unsigned &KNbCandies, maPosition
     return p;
 }
 
-unsigned duelMode(mat &grid, size_t &KMatSize, unsigned &KNbCandies, maPosition &pos){ // return 0 if it's a tie or 1 or 2 depending on the winner
-    return 0;
-}
-
 void loadingScreen(){
     couleur(KReset);
     affichVectCoulStr(KCandyCrush);
@@ -707,7 +704,7 @@ int main(){
             }
     }
     if (select == 0) classicMode(grid, KMatSize, KNbCandies, pos);
-    else if (select == 1) duelMode(grid, KMatSize, KNbCandies, pos);
+    //else if (select == 1) duelMode(grid, KMatSize, KNbCandies, pos);
     //else if (select == 2) leaderboard();
 
     input.disableRawMode();
