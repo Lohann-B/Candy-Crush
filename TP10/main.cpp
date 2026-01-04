@@ -392,12 +392,7 @@ void affichVectLine(const line &v, const unsigned int &numLigne, const maPositio
             cout << "\033[5;7;1m";
         }
         if (elem == 0){
-            if (numLigne == pos.ord && numCol == pos.abs){
-                cout << "\033[5;7;1m";
-            }
-            else{
-                couleur(0);
-            }
+            couleur(0);
             cout << " ";
         }
         else{
@@ -411,10 +406,14 @@ void affichVectLine(const line &v, const unsigned int &numLigne, const maPositio
     cout << endl;
 }
 
-void affichBarre(mat & grid, char carac){
-    string barre = "      ";
-    for (unsigned int i = 0; i < 4*grid.size()-1; i++){
-        barre += carac;
+void affichBarre(mat & grid){
+    string barre = "     ";
+    for (unsigned int i = 0; i < 4*grid.size()+1; i++){
+        if (i%4==0) {
+            barre += '+';
+        } else {
+            barre += '-';
+        }
     }
 
     cout << barre << endl;
@@ -427,14 +426,14 @@ void affichAbs(mat & grid){
         taille = grid.size();
     }
 
-    cout << "       ";
+    cout << "     |";
     for (unsigned int i = 1; i < taille+1; i++){
-        cout << i << "   ";
+        cout << " " << i << " |";
     }
 
     if (grid.size()>9){
         for (unsigned int i = 10; i < grid.size()+1; i++){
-            cout << i << "  ";
+            cout << i << " |";
         }
     }
 
@@ -446,13 +445,12 @@ void displayGrid(mat & grid, maPosition &pos){
     couleur(KReset);
 
     affichAbs(grid);
-    affichBarre(grid,'_');
+    affichBarre(grid);
 
     for (unsigned int numLigne = 0; numLigne < grid.size(); numLigne++){
         affichVectLine(grid[numLigne],numLigne, pos);
+        affichBarre(grid);
     }
-
-    affichBarre(grid,'-');
 }
 
 void displayMenu(const unsigned &select){
