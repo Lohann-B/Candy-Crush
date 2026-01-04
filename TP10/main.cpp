@@ -627,6 +627,7 @@ Joueur classicMode(mat &grid, size_t &KMatSize, unsigned &KNbCandies, maPosition
                         Streak = false;
 
                         if (atLeastThreeInARow(grid, streakPos, howMany)) {
+                            p.score = p.score + (grid[streakPos.ord][streakPos.abs] * howMany);
                             removalInRow(grid, streakPos, howMany);
                             displayGrid(grid, pos,p, coup, KMatSize);
                             usleep(1000000);
